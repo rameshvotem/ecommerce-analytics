@@ -61,5 +61,11 @@ print("✅ Orders date columns converted to datetime.")
 orders['order_delivered_customer_date'] = orders['order_delivered_customer_date'].fillna("Not Delivered")
 
 # ---------- Save cleaned files ----------
-orders.to_csv(os.path.join(STAGING_PATH, "orders_clean.csv"), index=False)
+order_items.to_csv(os.path.join(STAGING_PATH, "order_items_clean.csv"), index=False)
+customers.to_csv(os.path.join(STAGING_PATH, "customers_clean.csv"), index=False)
+products.to_csv(os.path.join(STAGING_PATH, "products_clean.csv"), index=False)
+payments.to_csv(os.path.join(STAGING_PATH, "payments_clean.csv"), index=False)
+reviews.to_csv(os.path.join(STAGING_PATH, "reviews_clean.csv"), index=False)
+categories.to_csv(os.path.join(STAGING_PATH, "categories_clean.csv"), index=False)
+
 print("💾 Cleaned file saved to staging folder.")
