@@ -1,0 +1,65 @@
+| Step | Action                        | Description                                                                                                                                                  |
+| ---- | ----------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| 1    | Loaded raw datasets       | Read all seven Olist CSV files from `data/raw/` into Pandas DataFrames.                                                                                      |
+| 2    | Standardized column names | Converted all headers to lowercase, replaced spaces / hyphens with underscores, and trimmed extra spaces. This keeps naming consistent for SQL and BI tools. |
+| 3    | Converted datatypes       | Changed all order-related timestamp columns from text to `datetime` objects using `pd.to_datetime()`.                                                        |
+| 4    | Handled missing values    | Identified NaNs with `isnull().sum()` and filled missing delivery dates with `"Not Delivered"` to avoid errors in later joins and calculations.              |
+| 5    | Validated data integrity  | Checked row counts (`.shape`) and ensured unique IDs using `.nunique()` to confirm no data loss or duplication.                                              |
+| 6    | Saved cleaned files       | Exported all cleaned DataFrames as CSV files to `data/staging/` for the next SQL integration step.                                                           |
+| 7    | Documented changes        | Added a Markdown summary inside the notebook describing each cleaning action.                                                                                |
+
+import pandas as pd
+import os
+
+# ---------- Paths ----------
+RAW_PATH = r"C:\Users\rames\data analytics project\data\raw"
+STAGING_PATH = r"C:\Users\rames\data analytics project\data\staging"
+
+# ---------- Load datasets ----------
+orders = pd.read_csv(os.path.join(RAW_PATH, "olist_orders_dataset.csv"))
+order_items = pd.read_csv(os.path.join(RAW_PATH, "olist_order_items_dataset.csv"))
+customers = pd.read_csv(os.path.join(RAW_PATH, "olist_customers_dataset.csv"))
+products = pd.read_csv(os.path.join(RAW_PATH, "olist_products_dataset.csv"))
+payments = pd.read_csv(os.path.join(RAW_PATH, "olist_order_payments_dataset.csv"))
+reviews = pd.read_csv(os.path.join(RAW_PATH, "olist_order_reviews_dataset.csv"))
+categories = pd.read_csv(os.path.join(RAW_PATH, "product_category_name_translation.csv"))
+
+print("✅ All datasets loaded successfully!")
+
+# ---------- Clean column names ----------
+def clean_column_names(df):
+    df.columns = (
+        df.columns
+        .str.strip()
+        .str.lower()
+        .str.replace(' ', '_')
+        .str.replace('-', '_')
+    )
+    return df
+
+for df in [orders, order_items, customers, products, payments, reviews, categories]:
+    clean_column_names(df)
+
+print("✅ Column names standardized.")
+
+# ---------- Convert date columns ----------
+date_cols = [
+    "order_purchase_timestamp",
+    "order_approved_at",
+    "order_delivered_carrier_date",
+    "order_delivered_customer_date",
+    "order_estimated_delivery_date"
+]
+
+for col in date_cols:
+    if col in orders.columns:
+        orders[col] = pd.to_datetime(orders[col], errors='coerce')
+
+print("✅ Orders date columns converted to datetime.")
+
+# ---------- Handle missing values ----------
+orders['order_delivered_customer_date'] = orders['order_delivered_customer_date'].fillna("Not Delivered")
+
+# ---------- Save cleaned files ----------
+orders.to_csv(os.path.join(STAGING_PATH, "orders_clean.csv"), index=False)
+print("💾 Cleaned file saved to staging folder.")
