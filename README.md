@@ -10,3 +10,15 @@ Identify top-performing products, categories, and regions.
 Build Power BI dashboards for real-time insights.
 
 Apply RFM analysis, cohort retention, and forecasting.
+
+### Day 2 — Initial Data Exploration
+- Loaded and reviewed all Olist tables.
+- Checked missing values and datatypes.
+- Identified key relationships and data quality issues.
+- Ready for Day 3 (Data Cleaning & Standardization).
+### ✅ Day 3 Summary
+- Cleaned column names (lowercase, underscores).
+- Converted date columns to datetime.
+- Filled or tagged missing delivery dates.
+- Verified unique IDs and row counts.
+- Exported cleaned data to `/data/staging/`.
