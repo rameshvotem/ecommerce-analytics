@@ -1,0 +1,9 @@
+| Step | Action                            | Description                                                                          |
+| ---- | --------------------------------- | ------------------------------------------------------------------------------------ |
+| 1    | Loaded All 7 Datasets         | Using `pandas.read_csv()` from `data/raw/`.                                          |
+| 2    | Inspected Shape & Columns     | `.shape`, `.columns.tolist()`, and `.info()` to see rows, columns, and datatypes.    |
+| 3    | Checked Missing Values        | `df.isnull().sum()` to find NaNs and decide what to clean later.                     |
+| 4    | Viewed Sample Rows            | `print(df.head())` to see real data.                                                 |
+| 5    | Explored Basic Business Facts | Found date range of orders, unique customers, top payment types, and order statuses. |
+| 6    | Mapped Table Relationships    | Found join keys like `order_id`, `customer_id`, and `product_id`.                    |
+| 7    | Documented Observations       | Noted which columns need datatype fixes or missing value handling.                   |
