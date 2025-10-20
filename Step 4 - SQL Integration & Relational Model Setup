@@ -1,0 +1,72 @@
+1. Create a SQLite database.
+2. Load your cleaned tables into it.
+3. Run test queries to confirm data integrity.
+
+| Step | Action                         | Description                                                                |
+| ---- | ------------------------------ | -------------------------------------------------------------------------- |
+| 1    | Created SQLite database    | `ecommerce.db` file built under `/sql/` folder.                            |
+| 2    | Loaded cleaned CSVs        | Imported 7 cleaned tables from `/data/staging/`.                           |
+| 3    | Verified data loads        | Checked row counts and viewed sample rows.                                 |
+| 4    | Tested relationships       | Confirmed joins between orders–customers and orders–order_items are valid. |
+| 5    | Closed database connection | Saved all changes safely.                                                  |
+
+
+import pandas as pd
+import sqlite3
+import os
+
+STAGING_PATH = r"C:\Users\rames\data analytics project\data\staging"
+DB_PATH = r"C:\Users\rames\data analytics project\sql\ecommerce.db"
+conn = sqlite3.connect(DB_PATH)
+print("✅ Database created/connected successfully!")
+# Define all CSV → table mappings
+tables = {
+    "orders": "orders_clean.csv",
+    "order_items": "order_items_clean.csv",
+    "customers": "customers_clean.csv",
+    "products": "products_clean.csv",
+    "payments": "payments_clean.csv",
+    "reviews": "reviews_clean.csv",
+    "categories": "categories_clean.csv"
+}
+
+for table, filename in tables.items():
+    df = pd.read_csv(os.path.join(STAGING_PATH, filename))
+    df.to_sql(table, conn, if_exists='replace', index=False)
+    print(f"✅ Loaded {filename} → table: {table}")
+cursor = conn.cursor()
+
+# Row counts
+for table in tables.keys():
+    cursor.execute(f"SELECT COUNT(*) FROM {table}")
+    count = cursor.fetchone()[0]
+    print(f"{table}: {count:,} rows")
+
+# Sample data
+cursor.execute("SELECT * FROM orders LIMIT 5;")
+print("\nSample from Orders Table:")
+for row in cursor.fetchall():
+    print(row)
+# 1. Orders ↔ Customers
+cursor.execute("""
+SELECT COUNT(*) 
+FROM orders o 
+LEFT JOIN customers c 
+ON o.customer_id = c.customer_id 
+WHERE c.customer_id IS NULL;
+""")
+missing_customers = cursor.fetchone()[0]
+print(f"Orders without matching customers: {missing_customers}")
+
+# 2. Order Items ↔ Orders
+cursor.execute("""
+SELECT COUNT(*) 
+FROM order_items oi 
+LEFT JOIN orders o 
+ON oi.order_id = o.order_id 
+WHERE o.order_id IS NULL;
+""")
+missing_orders = cursor.fetchone()[0]
+print(f"Order items without matching orders: {missing_orders}")
+conn.close()
+print("🔒 Database connection closed.")
