@@ -7,3 +7,100 @@
 | 5    | Explored Basic Business Facts | Found date range of orders, unique customers, top payment types, and order statuses. |
 | 6    | Mapped Table Relationships    | Found join keys like `order_id`, `customer_id`, and `product_id`.                    |
 | 7    | Documented Observations       | Noted which columns need datatype fixes or missing value handling.                   |
+
+
+# ==============================================================
+# DAY 2 - INITIAL DATA EXPLORATION (EDA)
+# Project: E-commerce Sales & Customer Analytics
+# Author: Ramesh
+# ==============================================================
+
+import pandas as pd
+import os
+
+# --------------------------------------------------------------
+# 1. Set up data path
+# --------------------------------------------------------------
+DATA_PATH = r"C:\Users\rames\data analytics project\data\raw"
+
+# --------------------------------------------------------------
+# 2. Load all datasets
+# --------------------------------------------------------------
+orders = pd.read_csv(os.path.join(DATA_PATH, "olist_orders_dataset.csv"))
+order_items = pd.read_csv(os.path.join(DATA_PATH, "olist_order_items_dataset.csv"))
+customers = pd.read_csv(os.path.join(DATA_PATH, "olist_customers_dataset.csv"))
+products = pd.read_csv(os.path.join(DATA_PATH, "olist_products_dataset.csv"))
+payments = pd.read_csv(os.path.join(DATA_PATH, "olist_order_payments_dataset.csv"))
+reviews = pd.read_csv(os.path.join(DATA_PATH, "olist_order_reviews_dataset.csv"))
+categories = pd.read_csv(os.path.join(DATA_PATH, "product_category_name_translation.csv"))
+
+print("✅ All 7 datasets loaded successfully!\n")
+
+# --------------------------------------------------------------
+# 3. View basic info for each dataset
+# --------------------------------------------------------------
+datasets = {
+    "Orders": orders,
+    "Order Items": order_items,
+    "Customers": customers,
+    "Products": products,
+    "Payments": payments,
+    "Reviews": reviews,
+    "Categories": categories
+}
+
+for name, df in datasets.items():
+    print(f"📘 {name}")
+    print(f"Shape: {df.shape[0]} rows, {df.shape[1]} columns")
+    print(df.columns.tolist())
+    print(df.info())
+    print("-" * 80)
+
+# --------------------------------------------------------------
+# 4. Check missing values
+# --------------------------------------------------------------
+print("\n🔍 Missing values summary:")
+for name, df in datasets.items():
+    nulls = df.isnull().sum()
+    nulls = nulls[nulls > 0]
+    if len(nulls) > 0:
+        print(f"\n{name} has missing values:")
+        print(nulls)
+    else:
+        print(f"\n{name}: No missing values ✅")
+    print("-" * 60)
+
+# --------------------------------------------------------------
+# 5. Quick business-level insights
+# --------------------------------------------------------------
+print("\n🧠 Quick Insights:")
+print(f"Orders Date Range: {orders['order_purchase_timestamp'].min()} → {orders['order_purchase_timestamp'].max()}")
+print(f"Unique Customers: {customers['customer_unique_id'].nunique()}")
+print(f"Top Payment Types:\n{payments['payment_type'].value_counts().head()}")
+print(f"Order Status Distribution:\n{orders['order_status'].value_counts().head()}")
+
+# --------------------------------------------------------------
+# 6. Relationship keys overview
+# --------------------------------------------------------------
+print("\n🔗 Key Relationships:")
+relations = {
+    "orders ↔ order_items": set(orders.columns) & set(order_items.columns),
+    "orders ↔ payments": set(orders.columns) & set(payments.columns),
+    "orders ↔ reviews": set(orders.columns) & set(reviews.columns),
+    "orders ↔ customers": set(orders.columns) & set(customers.columns),
+    "order_items ↔ products": set(order_items.columns) & set(products.columns),
+    "products ↔ categories": set(products.columns) & set(categories.columns)
+}
+for rel, keys in relations.items():
+    print(f"{rel}: {keys}")
+
+# --------------------------------------------------------------
+# 7. Summary for documentation
+# --------------------------------------------------------------
+print("""
+✅ Summary:
+- Loaded 7 datasets successfully.
+- Verified row counts and datatypes.
+- Identified missing values and key join columns.
+- Ready for Day 3: Data Cleaning & Standardization.
+""")
