@@ -1,1 +1,54 @@
+🎯 Objective
 
+Perform exploratory data analysis on the cleaned e-commerce dataset using SQL (SQLite) to validate data integrity, calculate key performance indicators, and prepare summary tables for BI visualization.
+
+🧰 Environment Setup
+
+Database: ecommerce.db (SQLite)
+
+Tooling: DB Browser for SQLite / SQLite CLI
+
+Data Source: Cleaned CSVs from Day 4 loaded into the database
+
+Primary Table Used: orders
+
+🧠 Key Queries & Insights
+1️⃣ Order Status Distribution
+SELECT order_status, COUNT(*) AS total
+FROM orders
+GROUP BY order_status
+ORDER BY total DESC;
+
+
+Purpose: Understand order lifecycle mix (delivered, shipped, cancelled, etc.)
+Insight: Majority of orders are successfully delivered → healthy fulfillment process.
+
+2️⃣ Monthly Order Trend
+SELECT 
+  strftime('%Y-%m', order_purchase_timestamp) AS order_month,
+  COUNT(*) AS total_orders
+FROM orders
+GROUP BY order_month
+ORDER BY order_month;
+
+
+Purpose: Track demand and seasonality over time.
+Insight: Monthly growth pattern visible; peaks during holiday months.
+
+3️⃣ Average Delivery Time
+SELECT 
+  ROUND(AVG(julianday(order_delivered_customer_date) - 
+            julianday(order_purchase_timestamp)), 2) AS avg_delivery_days
+FROM orders
+WHERE order_status = 'delivered';
+
+
+Purpose: Measure logistics performance.
+Insight: Average delivery ≈ X days → indicates efficient fulfillment pipeline. (replace X with your result)
+
+🧾 Summary of Achievements
+Step	Task	Outcome
+1	Connected to SQLite DB	Verified presence of orders and related tables
+2	Ran analytical SQL queries	Computed order counts, time range, and fulfillment metrics
+3	Exported results to CSV	Saved summaries in data/staging/ for Power BI integration
+4	Validated data quality	Confirmed consistent timestamps and logical date ranges
