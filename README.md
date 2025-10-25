@@ -22,3 +22,8 @@ Apply RFM analysis, cohort retention, and forecasting.
 - Filled or tagged missing delivery dates.
 - Verified unique IDs and row counts.
 - Exported cleaned data to `/data/staging/`.
+- ### Step 4 — SQL Integration & Relational Model Setup
+- Created SQLite database and loaded cleaned CSV tables.
+- Verified table relationships and row counts.
+- Database ready for analytical SQL queries.
+
