@@ -26,4 +26,8 @@ Apply RFM analysis, cohort retention, and forecasting.
 - Created SQLite database and loaded cleaned CSV tables.
 - Verified table relationships and row counts.
 - Database ready for analytical SQL queries.
-
+### Step 5 — Exploratory SQL Analysis
+- Ran SQL queries to analyze order patterns and data quality.
+- Calculated total orders, monthly trends, and average delivery time.
+- Exported summarized data for Power BI visualizations.
+- Verified successful data pipeline from raw → clean → database → query stage.
